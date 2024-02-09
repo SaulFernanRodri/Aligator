@@ -13,4 +13,4 @@ if __name__ == '__main__':
 
     if args.option == "test_model":
         # python app\training_scripts.py -o
-        print("Hello world prueba 2")
+        print("Hello world prueba 2 visual")
