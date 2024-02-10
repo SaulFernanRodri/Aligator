@@ -1,9 +1,10 @@
 import argparse
+from processing import read
 
-if __name__ == '__main__':
 
+def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--option", type=str, help="Select an script option")
+    parser.add_argument("-o", "--option", type=str, help="Select a script option")
     parser.add_argument("-r", "--route", type=str, help="Route for training model")
     parser.add_argument("-g", "--gamma", type=str, help="Parameter gamma SVC")
     args = parser.parse_args()
@@ -11,6 +12,12 @@ if __name__ == '__main__':
     if args.option == "train_model":
         print(f"This is the route: {args.route}")
 
-    if args.option == "test_model":
+    elif args.option == "test_model":
         # python app\training_scripts.py -o
         print("Hello world prueba 2 visual")
+
+        read(args.route)
+
+
+if __name__ == '__main__':
+    main()
