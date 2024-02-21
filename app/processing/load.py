@@ -1,12 +1,7 @@
-def read(path):
-    try:
-        with open(path, 'r', encoding='utf-8') as txt_file:
-            content = txt_file.read()
-            print(content)
+import pandas as pd
 
-    except FileNotFoundError:
-        print(f"El archivo en la ruta '{path}' no fue encontrado.")
 
-    except Exception as e:
-        print(f"Ocurrió un error al leer el archivo: {e}")
-        return None
+def load_data(file_path):
+    # Cargar el archivo delimitado por tabulaciones
+    return pd.read_csv(file_path, sep='\t')
+
