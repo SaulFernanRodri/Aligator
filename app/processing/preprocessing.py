@@ -4,7 +4,6 @@ from sklearn.preprocessing import StandardScaler
 
 
 def normalize_data(df):
-    # Normalizar las columnas de coordenadas, no es necesario
     scaler = StandardScaler()
     df[['X', 'Y', 'Z']] = scaler.fit_transform(df[['X', 'Y', 'Z']])
     return df
@@ -25,20 +24,29 @@ def define_and_assign_sectors(df, n_clusters=4):
 
 
 def summarize_data(df):
-    # Resumir los datos por Timestep y Sector
-    summary = df.groupby(['Timestep', 'Sector']).agg(
-        alive=('StillAlive', lambda x: x.sum()),
-        dead=('StillAlive', lambda x: (~x).sum())
-    ).unstack(fill_value=0).stack()
-    # Ajustar el formato de resumen
-    summary_format = summary.reset_index().pivot_table(
-        index='Timestep',
-        columns='Sector',
-        values=['alive', 'dead'],
-        fill_value=0
-    )
-    summary_format.columns = ['{}_sector {}'.format(*col) for col in summary_format.columns]
-    return summary_format.reset_index()
+    # Contar el número total de entidades (células y moléculas juntas) por Timestep y Sector
+    summary = df.groupby(['Timestep', 'Sector']).size().reset_index(name='Entity_Count')
+
+    # Convertir el resumen en un formato de tabla pivotante para facilitar la visualización
+    summary_pivot = summary.pivot(index='Timestep', columns='Sector', values='Entity_Count').fillna(0)
+    summary_pivot.columns = [f'entities_sector_{col}' for col in summary_pivot.columns]
+
+    return summary_pivot.reset_index()
+
+
+def integrate_movements_to_summary(df, movements):
+    # Transformar el DataFrame de movimientos a un formato más adecuado para la fusión
+    movements_pivot = movements.pivot_table(index='Timestep', columns=['Prev_Sector', 'Sector'], values='Moved_Cells',
+                                            fill_value=0)
+
+    # Aplanar el MultiIndex en las columnas y crear nombres de columnas significativos
+    movements_pivot.columns = ['mov_{}_to_{}'.format(int(from_sec), int(to_sec)) for from_sec, to_sec in
+                               movements_pivot.columns]
+
+    # Fusionar el DataFrame de resumen con los movimientos
+    summary_df = pd.merge(df, movements_pivot, on='Timestep', how='left').fillna(0)
+
+    return summary_df
 
 
 def track_movements(df, kmeans_model):
