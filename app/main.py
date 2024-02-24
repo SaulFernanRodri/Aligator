@@ -1,6 +1,7 @@
 import argparse
 from processing.load import load_data
-from processing.preprocessing import normalize_data, define_and_assign_sectors, summarize_data, integrate_movements_to_summary, track_movements
+from processing.preprocessing import (normalize_data, define_and_assign_sectors, summarize_data,
+                                      integrate_movements_to_summary, track_movements)
 
 
 def main():
@@ -19,7 +20,6 @@ def main():
         preprocessed_data = summarize_data(df)
         summary_df = integrate_movements_to_summary(preprocessed_data, movements)
         summary_df.to_csv('files/summary_data.csv', index=False)
-
 
     elif args.option == "train_model":
         print(f"This is the route: {args.route}")

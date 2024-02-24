@@ -35,15 +35,13 @@ def summarize_data(df):
 
 
 def integrate_movements_to_summary(df, movements):
-    # Transformar el DataFrame de movimientos a un formato más adecuado para la fusión
     movements_pivot = movements.pivot_table(index='Timestep', columns=['Prev_Sector', 'Sector'], values='Moved_Cells',
                                             fill_value=0)
 
-    # Aplanar el MultiIndex en las columnas y crear nombres de columnas significativos
+    # Aplanar el MultiIndex en las columnas
     movements_pivot.columns = ['mov_{}_to_{}'.format(int(from_sec), int(to_sec)) for from_sec, to_sec in
                                movements_pivot.columns]
 
-    # Fusionar el DataFrame de resumen con los movimientos
     summary_df = pd.merge(df, movements_pivot, on='Timestep', how='left').fillna(0)
 
     return summary_df
