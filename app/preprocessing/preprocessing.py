@@ -34,7 +34,7 @@ def summarize_data(df):
     return summary_pivot.reset_index()
 
 
-def integrate_movements_to_summary(df, movements):
+def preprocessing_data(df, movements):
     movements_pivot = movements.pivot_table(index='Timestep', columns=['Prev_Sector', 'Sector'], values='Moved_Cells',
                                             fill_value=0)
 
