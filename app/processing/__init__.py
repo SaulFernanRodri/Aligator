@@ -1,1 +1,1 @@
-from .load import load_data
+from .load import normalize_dataframe

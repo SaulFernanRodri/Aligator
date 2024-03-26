@@ -1,24 +1,23 @@
-import pandas as pd
 import pickle
-import os
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+def normalize_dataframe(file_path):
+    df = pd.read_csv(file_path, sep=',')
+    # Seleccionar columnas que no se quieren normalizar
+    cols_to_exclude = ['Timestep', 'Sector']
+
+    # Seleccionar las columnas que se van a normalizar
+    cols_to_normalize = df.columns.difference(cols_to_exclude)
+
+    # Inicializar el normalizador
+    scaler = MinMaxScaler()
+
+    # Normalizar los datos y ajustar al rango deseado
+    df[cols_to_normalize] = scaler.fit_transform(df[cols_to_normalize])
+    pickle.dump(scaler, open('scaler.pkl', 'wb'))
+    return df
 
 
-def load_data(csv_train_route, csv_test_route, train_pickle_route, test_pickle_route):
 
-    if not os.path.isfile(train_pickle_route):
-        train_data = pd.read_csv(csv_train_route)
-        with open(train_pickle_route, 'wb') as f:
-            pickle.dump(train_data, f)
-    else:
-        with open(train_pickle_route, 'rb') as f:
-            train_data = pickle.load(f)
 
-    if not os.path.isfile(test_pickle_route):
-        test_data = pd.read_csv(csv_test_route)
-        with open(test_pickle_route, 'wb') as f:
-            pickle.dump(test_data, f)
-    else:
-        with open(test_pickle_route, 'rb') as f:
-            test_data = pickle.load(f)
-
-    return train_data, test_data
