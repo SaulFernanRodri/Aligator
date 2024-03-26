@@ -1,0 +1,11 @@
+-Random Forest
+Peptidex10 --10 ejemplos
+
+--Cellsmutans
+MSE (Validación): 0.013098749999999998
+R^2 (Validación): 0.8544583333333333
+
+--Macromoleculas
+MSE (Validación): 0.024440099343869072
+R^2 (Validación): 0.8450665713454792
+

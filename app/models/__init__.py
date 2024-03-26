@@ -1,3 +1,3 @@
-from .train import trainRandomForest
-from .test import testRandomForest
-from .randomforest import RandomForest
+from .train import trainRandomForest,trainSVR,trainGBR
+from .test import test
+from .model import model

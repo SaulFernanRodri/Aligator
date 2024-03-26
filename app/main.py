@@ -1,11 +1,8 @@
 import argparse
 import pickle
-
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import cross_val_score
 from processing import normalize_dataframe
 from preprocessing import load_data, load_data_json, preprocessing_data
-from models import trainRandomForest, testRandomForest, RandomForest
+from models import trainGBR, trainSVR, trainRandomForest, test, model
 
 
 def main():
@@ -26,7 +23,9 @@ def main():
     name = args.name
 
     # Global variables
-    model_route = f"data/ramdomForest.pkl"
+    rf_route = f"data/ramdomForest.pkl"
+    svr_route = f"data/SVR.pkl"
+    gbr_route = f"data/GBR.pkl"
     csv_simulation = f"datasets/simulation_{name}.csv"
     csv_simulation_normalize = f"datasets/simulation_moramlize_{name}.csv"
     train_pickle_route = f"data/train.pkl"
@@ -43,7 +42,7 @@ def main():
 
 
     if option == "preprocessing":
-        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\results\PCQuorum-SmSmX10_data_1709759337212_.txt" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2 -n Peptide_1
+        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\PCQuorum-SmSmX10_data_1710490541632_.txt" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2 -n Peptide_1
         # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\results\PCQuorum-SmPa5X_data_1710488974828_.txt" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\muitas.json" -c 2 -n Muchas_2
         df = load_data(route_df)
         config = load_data_json(route_json)
@@ -53,24 +52,30 @@ def main():
 
 
     if option == "train":
-        simulation_df = normalize_dataframe(route_df)
+        # python app\main.py -o train -n todos
+        simulation_df = normalize_dataframe(csv_simulation)
         simulation_df.to_csv(csv_simulation_normalize, index=False)
-        X_train, y_train, X_val, y_val, X_test, y_test = RandomForest(simulation_df)
+        X_train, X_val, X_test, y_train, y_val, y_test = model(simulation_df)
+
         rf = trainRandomForest(X_train, y_train, X_val, y_val)
-        pickle.dump(rf, open(model_route, 'wb'))
+        gbr = trainGBR(X_train, y_train, X_val, y_val)
+        svr = trainSVR(X_train, y_train, X_val, y_val)
+
+        pickle.dump(rf, open(rf_route, 'wb'))
+        pickle.dump(gbr, open(gbr_route, 'wb'))
+        pickle.dump(svr, open(svr_route, 'wb'))
+
         pickle.dump((X_train, y_train), open(train_pickle_route, "wb"))
         pickle.dump((X_val, y_val), open(val_pickle_route, "wb"))
         pickle.dump((X_test, y_test), open( test_pickle_route, "wb"))
 
     if option == "test":
-        # Cargar el modelo
-        rf = pickle.load(open(model_route, 'rb'))
 
-        # Cargar los conjuntos de prueba
+        rf = pickle.load(open(svr_route, 'rb'))
+
         X_test, y_test = pickle.load(open("data/test_data.pkl", "rb"))
 
-        # Evaluar el modelo en el conjunto de prueba
-        testRandomForest(rf, X_test, y_test)
+        test(rf, X_test, y_test)
 
 
 if __name__ == '__main__':
