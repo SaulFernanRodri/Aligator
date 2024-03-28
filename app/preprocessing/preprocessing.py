@@ -35,11 +35,14 @@ def preprocessing_data(df, config, n_divisions, future_step):
 
     results = []
 
+    adjustment = 1  # O una cantidad pequeña relevante a la escala de tus datos
     limits = {
-        'X': np.linspace(df['X'].min(), df['X'].max(), n_divisions + 1),
-        'Y': np.linspace(df['Y'].min(), df['Y'].max(), n_divisions + 1),
-        'Z': np.linspace(df['Z'].min(), df['Z'].max(), n_divisions + 1)
+        'X': np.linspace(df['X'].min(), df['X'].max() + adjustment, n_divisions + 1),
+        'Y': np.linspace(df['Y'].min(), df['Y'].max() + adjustment, n_divisions + 1),
+        'Z': np.linspace(df['Z'].min(), df['Z'].max() + adjustment, n_divisions + 1),
     }
+
+    print(df['X'].max())
     #Por ejemplo, si df['X'].min() es 0, df['X'].max() es 10, y n_divisions es 2, entonces np.linspace(0, 10, 3) generará [0, 5, 10].
     #Esto significa que el espacio en el eje X se dividirá en 2 sectores, con límites en 0, 5, y 10.
 
