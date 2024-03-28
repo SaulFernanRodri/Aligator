@@ -1,59 +1,80 @@
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
-from sklearn.ensemble import GradientBoostingRegressor
-def trainRandomForest(X_train,y_train,X_val,y_val):
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import SelectFromModel
+def trainRandomForest(X_train, y_train, X_val, y_val):
+    rf = RandomForestRegressor(random_state=42)
+    param_dist_rf = {
+        'n_estimators': [100, 200, 300],
+        'max_depth': [10, 20, None],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'max_features': ['auto', 'sqrt']
+    }
+    random_search_rf = RandomizedSearchCV(rf, param_dist_rf, n_iter=100, cv=3, random_state=42, n_jobs=-1)
+    random_search_rf.fit(X_train, y_train)
+    best_rf = random_search_rf.best_estimator_
 
-    rf = RandomForestRegressor(n_estimators=100, random_state=42)
-    rf.fit(X_train, y_train)
-
-    y_pred_val = rf.predict(X_val)
-
+    y_pred_val = best_rf.predict(X_val)
     mse = mean_squared_error(y_val, y_pred_val)
     r2 = r2_score(y_val, y_pred_val)
 
-    print(f"MSE (Validación): {mse}")
-    print(f"R^2 (Validación): {r2}")
+    print(f"MSE (Validación) RF: {mse}")
+    print(f"R^2 (Validación) RF: {r2}")
 
-    return rf
-def trainGBR(X_train,y_train,X_val,y_val):
-    gbr = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42)
-    gbr.fit(X_train, y_train)
+    return best_rf
 
-    y_pred_val = gbr.predict(X_val)
+def trainGBR(X_train, y_train, X_val, y_val):
+    gbr = GradientBoostingRegressor(random_state=42)
+    param_dist_gbr = {
+        'n_estimators': [100, 200],
+        'learning_rate': [0.01, 0.1, 0.2],
+        'max_depth': [3, 5, 7],
+        'subsample': [0.8, 0.9, 1.0],
+        'min_samples_split': [2, 5],
+        'min_samples_leaf': [1, 2]
+    }
+    random_search_gbr = RandomizedSearchCV(gbr, param_dist_gbr, n_iter=100, cv=3, random_state=42, n_jobs=-1)
+    random_search_gbr.fit(X_train, y_train)
+    best_gbr = random_search_gbr.best_estimator_
 
+    y_pred_val = best_gbr.predict(X_val)
     mse_val = mean_squared_error(y_val, y_pred_val)
     r2_val = r2_score(y_val, y_pred_val)
 
-    print(f"MSE (Validación): {mse_val}")
-    print(f"R^2 (Validación): {r2_val}")
+    print(f"MSE (Validación) GBR: {mse_val}")
+    print(f"R^2 (Validación) GBR: {r2_val}")
 
-    return gbr
-def trainSVR(X_train,y_train,X_val,y_val):
+    return best_gbr
+
+
+def trainSVR(X_train, y_train, X_val, y_val):
+    pipeline = Pipeline([
+        ('feature_selection', SelectFromModel(GradientBoostingRegressor(random_state=42))),
+        ('svr', SVR())
+    ])
+
     param_grid_svr = {
-        'C': [1, 10, 100, 1000],
-        'gamma': ['scale', 'auto'],
-        'kernel': ['rbf', 'linear']
+        'svr__C': [0.1, 1, 10],
+        'svr__gamma': ['scale', 'auto'],
+        'svr__kernel': ['rbf', 'linear'],
+        'svr__epsilon': [0.01, 0.1, 1]
     }
 
-    svr = SVR()
-
-    grid_search_svr = GridSearchCV(svr, param_grid_svr, cv=5, scoring='neg_mean_squared_error')
+    grid_search_svr = GridSearchCV(pipeline, param_grid_svr, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
     grid_search_svr.fit(X_train, y_train)
 
-    print("Best hyperparameters for SVR:", grid_search_svr.best_params_)
+    print("Mejores hiperparámetros para SVR:", grid_search_svr.best_params_)
 
     best_svr_model = grid_search_svr.best_estimator_
-
     y_pred_val = best_svr_model.predict(X_val)
     mse_val = mean_squared_error(y_val, y_pred_val)
     r2_val = r2_score(y_val, y_pred_val)
 
-    print(f"MSE (Validation): {mse_val}")
-    print(f"R^2 (Validation): {r2_val}")
+    print(f"MSE (Validación) SVR: {mse_val}")
+    print(f"R^2 (Validación) SVR: {r2_val}")
+
     return best_svr_model
-
-
-
-
