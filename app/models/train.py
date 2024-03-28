@@ -1,7 +1,6 @@
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectFromModel

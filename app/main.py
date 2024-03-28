@@ -70,7 +70,6 @@ def main():
         pickle.dump((X_test, y_test), open( test_pickle_route, "wb"))
 
     if option == "test":
-
         rf = pickle.load(open(svr_route, 'rb'))
 
         X_test, y_test = pickle.load(open("data/test_data.pkl", "rb"))
