@@ -1,3 +1,3 @@
 BioSpective
-mirando hacia el futuro biológico a través de simulaciones.
+Mirando hacia el futuro biológico a través de simulaciones.
 

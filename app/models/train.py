@@ -21,18 +21,25 @@ def _print_model_summary(model_name, mse, r2):
     print(f"R^2 (Validation): {r2}")
     print("---------------------------------------\n")
 
+
+def _print_best_params(search_cv, model_name):
+    print(f"Best hiperparámeters {model_name}:", search_cv.best_params_)
+
+
 def trainRandomForest(X_train, y_train, X_val, y_val):
     rf = RandomForestRegressor(random_state=42)
     param_dist_rf = {
-        'n_estimators': [100, 200, 300],
-        'max_depth': [10, 20, None],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4],
-        'max_features': ['auto', 'sqrt']
+        'n_estimators': [200, 300, 500, 1000],
+        'max_depth': [20, 30, None],
+        'min_samples_split': [2, 5, 10, 20],
+        'min_samples_leaf': [1, 2, 4, 8],
+        'max_features': ['sqrt']
     }
-    random_search_rf = RandomizedSearchCV(rf, param_dist_rf, n_iter=100, cv=3, random_state=42, n_jobs=-1)
-    random_search_rf.fit(X_train, y_train)
-    best_rf = random_search_rf.best_estimator_
+    grid_search_rf = GridSearchCV(rf, param_dist_rf, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
+    grid_search_rf.fit(X_train, y_train)
+    best_rf = grid_search_rf.best_estimator_
+
+    _print_best_params(grid_search_rf, "Random Forest")
 
     y_pred_val = best_rf.predict(X_val)
     mse = mean_squared_error(y_val, y_pred_val)
@@ -46,16 +53,18 @@ def trainRandomForest(X_train, y_train, X_val, y_val):
 def trainGBR(X_train, y_train, X_val, y_val):
     gbr = GradientBoostingRegressor(random_state=42)
     param_dist_gbr = {
-        'n_estimators': [100, 200],
-        'learning_rate': [0.01, 0.1, 0.2],
-        'max_depth': [3, 5, 7],
+        'n_estimators': [100, 200, 500],
+        'learning_rate': [0.01, 0.1, 0.2, 0.3],
+        'max_depth': [3, 5, 7, 10],
         'subsample': [0.8, 0.9, 1.0],
-        'min_samples_split': [2, 5],
-        'min_samples_leaf': [1, 2]
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4, 8]
     }
-    random_search_gbr = RandomizedSearchCV(gbr, param_dist_gbr, n_iter=100, cv=3, random_state=42, n_jobs=-1)
-    random_search_gbr.fit(X_train, y_train)
-    best_gbr = random_search_gbr.best_estimator_
+    grid_search_gbr = GridSearchCV(gbr, param_dist_gbr, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
+    grid_search_gbr.fit(X_train, y_train)
+    best_gbr = grid_search_gbr.best_estimator_
+
+    _print_best_params(grid_search_gbr, "Gradient Boosting Regressor")
 
     y_pred_val = best_gbr.predict(X_val)
     mse_val = mean_squared_error(y_val, y_pred_val)
@@ -74,7 +83,7 @@ def trainSVR(X_train, y_train, X_val, y_val):
     ])
 
     param_grid_svr = {
-        'svr__C': [0.1, 1, 10],
+        'svr__C': [0.1, 1, 10, 100],
         'svr__gamma': ['scale', 'auto'],
         'svr__kernel': ['rbf', 'linear'],
         'svr__epsilon': [0.01, 0.1, 1]
@@ -82,8 +91,10 @@ def trainSVR(X_train, y_train, X_val, y_val):
 
     grid_search_svr = GridSearchCV(pipeline, param_grid_svr, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
     grid_search_svr.fit(X_train, y_train)
-
     best_svr_model = grid_search_svr.best_estimator_
+
+    _print_best_params(grid_search_svr, "Support Vector Regressor")
+
     y_pred_val = best_svr_model.predict(X_val)
     mse_val = mean_squared_error(y_val, y_pred_val)
     r2_val = r2_score(y_val, y_pred_val)
