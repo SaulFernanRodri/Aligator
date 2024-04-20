@@ -6,6 +6,7 @@ def model(df):
 
     X_train_full, X_test, y_train_full, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+    #no necesario por el momento
     X_train, X_val, y_train, y_val = train_test_split(X_train_full, y_train_full, test_size=0.25, random_state=42)  # 0.25 * 0.8 = 0.2
 
     return X_train, X_val, X_test, y_train, y_val, y_test

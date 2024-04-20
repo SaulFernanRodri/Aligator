@@ -28,6 +28,7 @@ def _print_best_params(search_cv, model_name):
 
 def trainRandomForest(X_train, y_train, X_val, y_val):
     rf = RandomForestRegressor(random_state=42)
+    #aumentar
     param_dist_rf = {
         'n_estimators': [200, 300, 500, 1000],
         'max_depth': [20, 30, None],

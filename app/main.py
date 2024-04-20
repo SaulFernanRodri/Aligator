@@ -1,4 +1,6 @@
 import argparse
+import os
+import pandas as pd
 import pickle
 from processing import normalize_dataframe
 from preprocessing import load_data, load_data_json, preprocessing_data
@@ -16,11 +18,12 @@ def main():
     args = parser.parse_args()
 
     # Model Parameters
-    route_df = args.route_df
+    folder_path = args.route_df
     route_json = args.route_json
     n_division = args.number_division
     option = args.option
     name = args.name
+    output_folder = r"C:\Users\Saul\Desktop\TFG\BioSpective\datasets"
 
     # Global variables
     rf_route = f"data/ramdomForest.pkl"
@@ -33,6 +36,7 @@ def main():
     test_pickle_route = f"data/test.pkl"
 
 
+
     X_train = []
     y_train = []
     X_val = []
@@ -42,13 +46,18 @@ def main():
 
 
     if option == "preprocessing":
-        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\PCQuorum-SmSmX10_data_1710490541632_.txt" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2 -n Peptide_1
-        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\results\PCQuorum-SmPa5X_data_1710488974828_.txt" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\muitas.json" -c 2 -n Muchas_2
-        df = load_data(route_df)
-        config = load_data_json(route_json)
-        simulation_df = preprocessing_data(df, config, n_division,10)
-        simulation_df.to_csv(csv_simulation, index=False)
+        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2 -n Peptide_1
+        for filename in os.listdir(folder_path):
+            if filename.endswith(".txt"):  # Asegúrate de que el archivo es del tipo correcto
+                route_df = os.path.join(folder_path, filename)
 
+                df = load_data(route_df)
+                config = load_data_json(route_json)
+
+                simulation_df = preprocessing_data(df, config, n_division, 10)
+
+                output_filename = filename.replace(".txt", "_processed.csv")
+                simulation_df.to_csv(os.path.join(output_folder, output_filename), index=False)
 
 
     if option == "train":
