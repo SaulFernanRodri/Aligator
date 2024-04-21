@@ -1,14 +1,13 @@
 import argparse
 import os
-import pandas as pd
 import pickle
 from processing import normalize_dataframe
 from preprocessing import load_data, load_data_json, preprocessing_data
-from models import trainGBR, trainSVR, trainRandomForest, test, model
+from models import traingbr, trainsvr, trainrandomforest, test, model
 
 
 def main():
-    #cd desktop\tfg\BioSpective\venv\scripts
+    # cd desktop\tfg\BioSpective\venv\scripts
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--option", type=str, help="Select a script option")
     parser.add_argument("-r", "--route_df", type=str, help="Route of the dataset")
@@ -35,16 +34,6 @@ def main():
     val_pickle_route = f"data/vaL.pkl"
     test_pickle_route = f"data/test.pkl"
 
-
-
-    X_train = []
-    y_train = []
-    X_val = []
-    y_val = []
-    X_test = []
-    y_test = []
-
-
     if option == "preprocessing":
         # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2
         for filename in os.listdir(folder_path):
@@ -59,31 +48,30 @@ def main():
                 output_filename = filename.replace(".txt", "_processed.csv")
                 simulation_df.to_csv(os.path.join(output_folder, output_filename), index=False)
 
-
     if option == "train":
         # python app\main.py -o train -n todos
         simulation_df = normalize_dataframe(csv_simulation)
         simulation_df.to_csv(csv_simulation_normalize, index=False)
-        X_train, X_val, X_test, y_train, y_val, y_test = model(simulation_df)
+        x_train, x_val, x_test, y_train, y_val, y_test = model(simulation_df)
 
-        rf = trainRandomForest(X_train, y_train, X_val, y_val)
-        gbr = trainGBR(X_train, y_train, X_val, y_val)
-        svr = trainSVR(X_train, y_train, X_val, y_val)
+        rf = trainrandomforest(x_train, y_train, x_val, y_val)
+        gbr = traingbr(x_train, y_train, x_val, y_val)
+        svr = trainsvr(x_train, y_train, x_val, y_val)
 
         pickle.dump(rf, open(rf_route, 'wb'))
         pickle.dump(gbr, open(gbr_route, 'wb'))
         pickle.dump(svr, open(svr_route, 'wb'))
 
-        pickle.dump((X_train, y_train), open(train_pickle_route, "wb"))
-        pickle.dump((X_val, y_val), open(val_pickle_route, "wb"))
-        pickle.dump((X_test, y_test), open( test_pickle_route, "wb"))
+        pickle.dump((x_train, y_train), open(train_pickle_route, "wb"))
+        pickle.dump((x_val, y_val), open(val_pickle_route, "wb"))
+        pickle.dump((x_test, y_test), open(test_pickle_route, "wb"))
 
     if option == "test":
         rf = pickle.load(open(svr_route, 'rb'))
 
-        X_test, y_test = pickle.load(open("data/test_data.pkl", "rb"))
+        x_test, y_test = pickle.load(open("data/test_data.pkl", "rb"))
 
-        test(rf, X_test, y_test)
+        test(rf, x_test, y_test)
 
 
 if __name__ == '__main__':
