@@ -18,7 +18,11 @@ def _visualize_performance(y_true, y_pred, model_name):
     plt.show()
 
 
-def _print_model_summary(model_name, mse, r2):
+def _print_model_summary(model_name, mse, r2, filename):
+    with open(filename, 'a') as f:
+        f.write(f"--- Model Summary: {model_name} ---\n")
+        f.write(f"MSE (Validation): {mse}\n")
+        f.write(f"R^2 (Validation): {r2}\n")
     print(f"--- Model Summary: {model_name} ---")
     print(f"MSE (Validation): {mse}")
     print(f"R^2 (Validation): {r2}")
@@ -48,7 +52,7 @@ def trainrandomforest(x_train, y_train, x_val, y_val):
     mse = mean_squared_error(y_val, y_pred_val)
     r2 = r2_score(y_val, y_pred_val)
 
-    _print_model_summary("Random Forest", mse, r2)
+    _print_model_summary("Random Forest", mse, r2, "model_RF.txt")
     _visualize_performance(y_val, y_pred_val, "Random Forest")
 
     return best_rf
@@ -74,7 +78,7 @@ def traingbr(x_train, y_train, x_val, y_val):
     mse_val = mean_squared_error(y_val, y_pred_val)
     r2_val = r2_score(y_val, y_pred_val)
 
-    _print_model_summary("Gradient Boosting Regressor", mse_val, r2_val)
+    _print_model_summary("Gradient Boosting Regressor", mse_val, r2_val, "model_GBR.txt")
     _visualize_performance(y_val, y_pred_val, "Gradient Boosting Regressor")
 
     return best_gbr
@@ -103,7 +107,7 @@ def trainsvr(x_train, y_train, x_val, y_val):
     mse_val = mean_squared_error(y_val, y_pred_val)
     r2_val = r2_score(y_val, y_pred_val)
 
-    _print_model_summary("Support Vector Regressor", mse_val, r2_val)
+    _print_model_summary("Support Vector Regressor", mse_val, r2_val, "model_SVR.txt")
     _visualize_performance(y_val, y_pred_val, "Support Vector Regressor")
 
     return best_svr_model
