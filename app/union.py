@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-ruta_carpeta_csv = 'C:\\Users\\Saul\\Desktop\\TFG\\BioSpective\\datasets'
+ruta_carpeta_csv = 'C:\\Users\\Saul\\Desktop\\TFG\\BioSpective\\basura'
 
 dataframes = []
 

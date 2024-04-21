@@ -23,7 +23,7 @@ def main():
     n_division = args.number_division
     option = args.option
     name = args.name
-    output_folder = r"C:\Users\Saul\Desktop\TFG\BioSpective\datasets"
+    output_folder = r"C:\Users\Saul\Desktop\TFG\BioSpective\basura"
 
     # Global variables
     rf_route = f"data/ramdomForest.pkl"
@@ -46,7 +46,7 @@ def main():
 
 
     if option == "preprocessing":
-        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2 -n Peptide_1
+        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2
         for filename in os.listdir(folder_path):
             if filename.endswith(".txt"):  # Asegúrate de que el archivo es del tipo correcto
                 route_df = os.path.join(folder_path, filename)
