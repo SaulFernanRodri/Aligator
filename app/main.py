@@ -3,7 +3,7 @@ import os
 import pickle
 from processing import normalize_dataframe
 from preprocessing import load_data, load_data_json, preprocessing_data
-from models import traingbr, trainsvr, trainrandomforest, test, model
+from models import traingbr, trainsvr, trainrandomforest, test, modeling
 
 
 def main():
@@ -12,7 +12,8 @@ def main():
     parser.add_argument("-o", "--option", type=str, help="Select a script option")
     parser.add_argument("-r", "--route_df", type=str, help="Route of the dataset")
     parser.add_argument("-j", "--route_json", type=str, help="Route of the json")
-    parser.add_argument("-c", "--number_division", type=int, default=4, help="Number of divisions, Example 2 divisions = 8 small cubes")
+    parser.add_argument("-c", "--number_division", type=int, default=4,
+                        help="Number of divisions, Example 2 divisions = 8 small cubes")
     parser.add_argument("-n", "--name", type=str, help="Name")
     args = parser.parse_args()
 
@@ -25,14 +26,8 @@ def main():
     output_folder = r"C:\Users\Saul\Desktop\TFG\BioSpective\basura"
 
     # Global variables
-    rf_route = f"data/ramdomForest.pkl"
-    svr_route = f"data/SVR.pkl"
-    gbr_route = f"data/GBR.pkl"
     csv_simulation = f"datasets/simulation_{name}.csv"
     csv_simulation_normalize = f"datasets/simulation_moramlize_{name}.csv"
-    train_pickle_route = f"data/train.pkl"
-    val_pickle_route = f"data/vaL.pkl"
-    test_pickle_route = f"data/test.pkl"
 
     if option == "preprocessing":
         # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2
@@ -49,29 +44,49 @@ def main():
                 simulation_df.to_csv(os.path.join(output_folder, output_filename), index=False)
 
     if option == "train":
-        # python app\main.py -o train -n todos
+        # Normalize the simulation data
         simulation_df = normalize_dataframe(csv_simulation)
         simulation_df.to_csv(csv_simulation_normalize, index=False)
-        x_train, x_val, x_test, y_train, y_val, y_test = model(simulation_df)
 
-        rf = trainrandomforest(x_train, y_train, x_val, y_val)
-        gbr = traingbr(x_train, y_train, x_val, y_val)
-        svr = trainsvr(x_train, y_train, x_val, y_val)
+        # Get the targets and the training, validation, and test data for each target
+        targets, results = modeling(simulation_df)
 
-        pickle.dump(rf, open(rf_route, 'wb'))
-        pickle.dump(gbr, open(gbr_route, 'wb'))
-        pickle.dump(svr, open(svr_route, 'wb'))
+        # For each target, train the random forest, gradient boosting, and support vector regression models
+        # and save the models and the data to pickle files
+        for target, data in results.items():
+            rf = trainrandomforest(data['x_train'], data['y_train'], data['x_val'], data['y_val'])
+            gbr = traingbr(data['x_train'], data['y_train'], data['x_val'], data['y_val'])
+            svr = trainsvr(data['x_train'], data['y_train'], data['x_val'], data['y_val'])
 
-        pickle.dump((x_train, y_train), open(train_pickle_route, "wb"))
-        pickle.dump((x_val, y_val), open(val_pickle_route, "wb"))
-        pickle.dump((x_test, y_test), open(test_pickle_route, "wb"))
+            pickle.dump(rf, open(f"data/rf_{target}.pkl", 'wb'))
+            pickle.dump(gbr, open(f"data/gbr_{target}.pkl", 'wb'))
+            pickle.dump(svr, open(f"data/svr_{target}.pkl", 'wb'))
+
+            pickle.dump((data['x_train'], data['y_train']), open(f"data/train_{target}.pkl", "wb"))
+            pickle.dump((data['x_val'], data['y_val']), open(f"data/val_{target}.pkl", "wb"))
+            pickle.dump((data['x_test'], data['y_test']), open(f"data/test_{target}.pkl", "wb"))
+
+        # Save the target names
+        with open('data/targets.pkl', 'wb') as f:
+            pickle.dump(targets, f)
 
     if option == "test":
-        rf = pickle.load(open(svr_route, 'rb'))
+        # Load the target names
+        with open('data/targets.pkl', 'rb') as f:
+            targets = pickle.load(f)
 
-        x_test, y_test = pickle.load(open("data/test_data.pkl", "rb"))
+        models = ['rf', 'gbr', 'svr']
 
-        test(rf, x_test, y_test)
+        # For each target and each model, load the model and the test data from the pickle files
+        # and test the model
+        for target in targets:
+            for model_name in models:
+                model = pickle.load(open(f"data/{model_name}_{target}.pkl", 'rb'))
+
+                x_test, y_test = pickle.load(open(f"data/test_{target}.pkl", "rb"))
+
+                print(f"Testing {model_name} model for {target}")
+                test(model, x_test, y_test)
 
 
 if __name__ == '__main__':
