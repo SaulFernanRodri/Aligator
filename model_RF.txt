@@ -1,0 +1,9 @@
+--- Model Summary: Random Forest ---
+MSE (Validation): 8.967194656481778e-05
+R^2 (Validation): 0.9991759641933156
+--- Model Summary: Random Forest ---
+MSE (Validation): 0.001119958822134722
+R^2 (Validation): 0.989737262938128
+--- Model Summary: Random Forest ---
+MSE (Validation): 0.00028175904280010815
+R^2 (Validation): 0.9764286699461946

@@ -1,0 +1,6 @@
+--- Model Summary: Support Vector Regressor ---
+MSE (Validation): 0.0023521338369025266
+R^2 (Validation): 0.9783851853564849
+--- Model Summary: Support Vector Regressor ---
+MSE (Validation): 0.001944580795024468
+R^2 (Validation): 0.9821808436163187
