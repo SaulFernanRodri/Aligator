@@ -54,9 +54,9 @@ def main():
         # For each target, train the random forest, gradient boosting, and support vector regression models
         # and save the models and the data to pickle files
         for target, data in results.items():
-            rf = trainrandomforest(data['x_train'], data['y_train'], data['x_val'], data['y_val'])
-            gbr = traingbr(data['x_train'], data['y_train'], data['x_val'], data['y_val'])
-            svr = trainsvr(data['x_train'], data['y_train'], data['x_val'], data['y_val'])
+            rf = trainrandomforest(data['x_train'], data['y_train'], data['x_val'], data['y_val'], target)
+            gbr = traingbr(data['x_train'], data['y_train'], data['x_val'], data['y_val'], target)
+            svr = trainsvr(data['x_train'], data['y_train'], data['x_val'], data['y_val'], target)
 
             pickle.dump(rf, open(f"data/rf_{target}.pkl", 'wb'))
             pickle.dump(gbr, open(f"data/gbr_{target}.pkl", 'wb'))
