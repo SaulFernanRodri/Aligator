@@ -4,9 +4,9 @@ from sklearn.model_selection import train_test_split
 def modeling(df):
     targets = [col for col in df.columns if col.startswith('Target')]
     results = {}
-
+    x = df.drop(columns=['Timestep', 'Sector']+targets)
     for target in targets:
-        x = df.drop(columns=['Timestep', 'Sector', target])
+
         y = df[target]
 
         x_train_full, x_test, y_train_full, y_test = train_test_split(x, y, test_size=0.2, random_state=42)

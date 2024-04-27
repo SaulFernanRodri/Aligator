@@ -1,0 +1,10 @@
+------- 500 -------
+--- Model Summary: Random Forest ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.0005532591847351076
+R^2 (Validation): 0.8189525204312749
+------- 750 -------
+--- Model Summary: Random Forest ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.0007206147861261049
+R^2 (Validation): 0.6812646087752654

@@ -1,12 +1,23 @@
 import numpy as np
 import pandas as pd
+import os
+
+
+def date_diff_in_seconds(name, df, output_folder, date_column='Date', output_filename='time.txt'):
+
+    df[date_column] = pd.to_datetime(df[date_column])
+    timedelta = df[date_column].iloc[-1] - df[date_column].iloc[0]
+    diff_seconds = timedelta.total_seconds()
+
+    with open(os.path.join(output_folder, output_filename), 'a') as file:
+        file.write(f'{name} : {diff_seconds}\n')
 
 
 def _calculate_volume(environment):
     width = environment['width']
     height = environment['height']
     length = environment['length']
-    return width * height * length
+    return width, height, length
 
 
 def _calculate_volumes(entities):
@@ -14,7 +25,11 @@ def _calculate_volumes(entities):
     for entity in entities:
         entity_name = entity.get('cellName', entity.get('name'))
         entity_radius = entity['radius']
-        volumes[entity_name] = 4 / 3 * np.pi * (entity_radius ** 3)
+        if 'height' in entity:
+            entity_height = entity['height']
+            volumes[entity_name] = np.pi * (entity_radius ** 2) * entity_height
+        else:
+            volumes[entity_name] = 4 / 3 * np.pi * (entity_radius ** 3)
     return volumes
 
 
@@ -45,9 +60,24 @@ def _select_sector(df, limits, i, j, k):
     return df_sector
 
 
-def preprocessing_data(df, config, n_divisions, future_step):
-    total_volume = _calculate_volume(config['environment'])
-    # sector_volume = total_volume / (n_divisions ** 3)
+def write_limits_to_file(limits, output_folder, output_filename='limits.txt'):
+    n_divisions = len(limits['X']) - 1
+    with open(os.path.join(output_folder, output_filename), 'w') as file:
+        sector_count = 0
+        for i in range(n_divisions):
+            for j in range(n_divisions):
+                for k in range(n_divisions):
+                    file.write(f'Sector {sector_count}:\n')
+                    file.write(f'X: {limits["X"][i]}, {limits["X"][i + 1]}\n')
+                    file.write(f'Y: {limits["Y"][j]}, {limits["Y"][j + 1]}\n')
+                    file.write(f'Z: {limits["Z"][k]}, {limits["Z"][k + 1]}\n')
+                    file.write('\n')
+                    sector_count += 1
+
+
+def preprocessing_data(df, config, n_divisions, future_step, output_folder):
+    width, height, length = _calculate_volume(config['environment'])
+    total_volume = width * height * length
     cell_volumes = _calculate_volumes(config['cells'])
     molecule_volumes = _calculate_volumes(config['agents']['molecules'])
 
@@ -55,14 +85,21 @@ def preprocessing_data(df, config, n_divisions, future_step):
 
     results = []
 
-    adjustment = 1  # O una cantidad pequeña relevante a la escala de tus datos
+    # adjustment = 0.0001
+    # limits = {
+    #    'X': np.linspace(df['X'].min(), df['X'].max() + adjustment, n_divisions + 1),
+    #   'Y': np.linspace(df['Y'].min(), df['Y'].max() + adjustment, n_divisions + 1),
+    #  'Z': np.linspace(df['Z'].min(), df['Z'].max() + adjustment, n_divisions + 1),
+    # }
+    # nos aseguramos que si cambiamos el numero de ts no cambien de tamaño los sectores
     limits = {
-        'X': np.linspace(df['X'].min(), df['X'].max() + adjustment, n_divisions + 1),
-        'Y': np.linspace(df['Y'].min(), df['Y'].max() + adjustment, n_divisions + 1),
-        'Z': np.linspace(df['Z'].min(), df['Z'].max() + adjustment, n_divisions + 1),
+        'X': np.linspace(0, width*1000, n_divisions + 1),
+        'Y': np.linspace(0, height*1000, n_divisions + 1),
+        'Z': np.linspace(0, length*1000, n_divisions + 1),
     }
 
-    print(df['X'].max())
+    write_limits_to_file(limits, output_folder)
+
     # Por ejemplo, si df['X'].min() es 0, df['X'].max() es 10, y n_divisions es 2, entonces np.linspace(0, 10, 3)
     # generará [0, 5, 10].
     # Esto significa que el espacio en el eje X se dividirá en 2 sectores, con límites en 0, 5, y 10.
@@ -94,6 +131,7 @@ def preprocessing_data(df, config, n_divisions, future_step):
                         'Timestep': timestep,
                         'Sector': sector,
                     }
+
                     # combinar dos diccionarios "unpacking operator" (**).
                     for name, volume in {**cell_volumes, **molecule_volumes}.items():
                         num_entities = len(df_sector[df_sector['Name'] == name])

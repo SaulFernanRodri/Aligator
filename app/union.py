@@ -1,23 +1,16 @@
 import os
 import pandas as pd
 
-ruta_carpeta_csv = 'C:\\Users\\Saul\\Desktop\\TFG\\BioSpective\\basura'
 
-dataframes = []
+def union(output_folder, csv_simulation):
 
+    dataframes = []
 
-for archivo in os.listdir(ruta_carpeta_csv):
-    if archivo.endswith('.csv'):
-        ruta_completa = os.path.join(ruta_carpeta_csv, archivo)
-        df = pd.read_csv(ruta_completa)
-        dataframes.append(df)
+    for archivo in os.listdir(output_folder):
+        if archivo.endswith('.csv'):
+            df = pd.read_csv(os.path.join(output_folder, archivo))
+            dataframes.append(df)
 
-df_unido = pd.concat(dataframes, ignore_index=True)
+    df_unido = pd.concat(dataframes, ignore_index=True)
 
-
-ruta_archivo_unido = 'C:\\Users\\Saul\\Desktop\\TFG\\BioSpective\\datasets\\simulation_todos.csv'
-
-
-df_unido.to_csv(ruta_archivo_unido, index=False)
-
-print(f'Archivo unido creado en: {ruta_archivo_unido}')
+    df_unido.to_csv(csv_simulation, index=False)

@@ -1,0 +1,10 @@
+------- 750 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target CellSmutans
+MSE (Validation): 9.999985814799318e-05
+R^2 (Validation): 0.9990883629106088
+------- 500 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target CellSmutans
+MSE (Validation): 9.999985814799166e-05
+R^2 (Validation): 0.9991508783974802

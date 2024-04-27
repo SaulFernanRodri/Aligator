@@ -18,12 +18,14 @@ def _visualize_performance(y_true, y_pred, model_name):
     plt.show()
 
 
-def _print_model_summary(model_name, mse, r2, target, filename):
+def _print_model_summary(model_name, mse, r2, target, filename, timestep_interval):
     with open(filename, 'a') as f:
+        f.write(f"------- {timestep_interval} -------\n")
         f.write(f"--- Model Summary: {model_name} ---\n")
         f.write(f"Target: {target}\n")
         f.write(f"MSE (Validation): {mse}\n")
         f.write(f"R^2 (Validation): {r2}\n")
+    print(f"------- {timestep_interval} -------")
     print(f"--- Model Summary: {model_name} ---")
     print(f"Target: {target}")
     print(f"MSE (Validation): {mse}")
@@ -35,7 +37,7 @@ def _print_best_params(search_cv, model_name):
     print(f"Best hiperparámeters {model_name}:", search_cv.best_params_)
 
 
-def trainrandomforest(x_train, y_train, x_val, y_val, target):
+def trainrandomforest(x_train, y_train, x_val, y_val, target, filename, timestep_interval):
     rf = RandomForestRegressor(random_state=42)
     param_dist_rf = {
         'n_estimators': [200, 300, 500, 1000],
@@ -54,19 +56,18 @@ def trainrandomforest(x_train, y_train, x_val, y_val, target):
     mse = mean_squared_error(y_val, y_pred_val)
     r2 = r2_score(y_val, y_pred_val)
 
-    _print_model_summary("Random Forest", mse, r2, target, "model_RF.txt")
-    _visualize_performance(y_val, y_pred_val, "Random Forest")
+    _print_model_summary("Random Forest", mse, r2, target,
+                         f"{filename}/model_RF_{target}.txt", timestep_interval)
+    # _visualize_performance(y_val, y_pred_val, "Random Forest")
 
     return best_rf
 
 
-def traingbr(x_train, y_train, x_val, y_val, target):
+def traingbr(x_train, y_train, x_val, y_val, target, filename, timestep_interval):
     gbr = GradientBoostingRegressor(random_state=42)
     param_dist_gbr = {
         'n_estimators': [100, 200, 500],
-        'learning_rate': [0.01, 0.1, 0.2, 0.3],
         'max_depth': [3, 5, 7, 10],
-        'subsample': [0.8, 0.9, 1.0],
         'min_samples_split': [2, 5, 10],
         'min_samples_leaf': [1, 2, 4, 8]
     }
@@ -80,13 +81,14 @@ def traingbr(x_train, y_train, x_val, y_val, target):
     mse_val = mean_squared_error(y_val, y_pred_val)
     r2_val = r2_score(y_val, y_pred_val)
 
-    _print_model_summary("Gradient Boosting Regressor", mse_val, r2_val, target, "model_GBR.txt")
-    _visualize_performance(y_val, y_pred_val, "Gradient Boosting Regressor")
+    _print_model_summary("Gradient Boosting Regressor", mse_val, r2_val, target,
+                         f"{filename}/model_GBR_{target}.txt", timestep_interval)
+    # _visualize_performance(y_val, y_pred_val, "Gradient Boosting Regressor")
 
     return best_gbr
 
 
-def trainsvr(x_train, y_train, x_val, y_val, target):
+def trainsvr(x_train, y_train, x_val, y_val, target, filename, timestep_interval):
     pipeline = Pipeline([
         ('feature_selection', SelectFromModel(GradientBoostingRegressor(random_state=42))),
         ('svr', SVR())
@@ -109,7 +111,8 @@ def trainsvr(x_train, y_train, x_val, y_val, target):
     mse_val = mean_squared_error(y_val, y_pred_val)
     r2_val = r2_score(y_val, y_pred_val)
 
-    _print_model_summary("Support Vector Regressor", mse_val, r2_val, target, "model_SVR.txt")
-    _visualize_performance(y_val, y_pred_val, "Support Vector Regressor")
+    _print_model_summary("Support Vector Regressor", mse_val, r2_val, target,
+                         f"{filename}/model_SVR_{target}.txt", timestep_interval)
+    # _visualize_performance(y_val, y_pred_val, "Support Vector Regressor")
 
     return best_svr_model

@@ -1,0 +1,5 @@
+------- 500 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.0013905793122032852
+R^2 (Validation): 0.8108805018397243
