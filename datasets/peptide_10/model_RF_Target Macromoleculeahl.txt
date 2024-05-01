@@ -8,3 +8,13 @@ R^2 (Validation): 0.7942485829243586
 Target: Target Macromoleculeahl
 MSE (Validation): 0.00042686326201020133
 R^2 (Validation): 0.8092772488286363
+------- 100 -------
+--- Model Summary: Random Forest ---
+Target: Target Macromoleculeahl
+MSE (Validation): 4.495065548625404e-05
+R^2 (Validation): 0.9729218526773777
+------- 150 -------
+--- Model Summary: Random Forest ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.00017764036645827777
+R^2 (Validation): 0.9458851852202015

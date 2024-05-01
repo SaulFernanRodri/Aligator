@@ -8,3 +8,13 @@ R^2 (Validation): 0.8529929368318192
 Target: Target Macromoleculeahl
 MSE (Validation): 0.000611317787989482
 R^2 (Validation): 0.7296078042404072
+------- 100 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 8.879525784011495e-05
+R^2 (Validation): 0.9053287174869064
+------- 150 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.00020988279913197413
+R^2 (Validation): 0.8539113963634537

@@ -36,9 +36,7 @@ def main():
     results_folder = f"datasets/{name}"
 
     if option == "preprocessing":
-        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10"
-        # -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json"
-        # -c 2 -n peptide_10 -ts 50 -csv "dataset_peptide_10_50.csv"
+        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2 -n peptide_10 -ts 50 -csv "dataset_peptide_10_50.csv"
         for filename in os.listdir(folder_path):
             if filename.endswith(".txt"):
                 route_df = os.path.join(folder_path, filename)

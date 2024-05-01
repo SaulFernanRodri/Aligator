@@ -8,3 +8,13 @@ R^2 (Validation): 0.9681581011112633
 Target: Target CellSmutans
 MSE (Validation): 0.00048712229720104713
 R^2 (Validation): 0.9950407415812328
+------- 100 -------
+--- Model Summary: Random Forest ---
+Target: Target CellSmutans
+MSE (Validation): 8.6601483822788e-06
+R^2 (Validation): 0.9999206312768512
+------- 150 -------
+--- Model Summary: Random Forest ---
+Target: Target CellSmutans
+MSE (Validation): 1.82286462617809e-05
+R^2 (Validation): 0.99983417128435

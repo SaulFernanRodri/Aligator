@@ -3,3 +3,18 @@
 Target: Target CellSmitis
 MSE (Validation): 0.00705035456868147
 R^2 (Validation): 0.938149763185899
+------- 100 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target CellSmitis
+MSE (Validation): 0.0015060257034638805
+R^2 (Validation): 0.9870921837448557
+------- 150 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target CellSmitis
+MSE (Validation): 9.999985814800348e-05
+R^2 (Validation): 0.9990550761267201
+------- 750 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target CellSmitis
+MSE (Validation): 0.010361780111396154
+R^2 (Validation): 0.9146323170181023

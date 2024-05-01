@@ -8,3 +8,13 @@ R^2 (Validation): 0.8865807826216988
 Target: Target Macromoleculeahl
 MSE (Validation): 0.001731549609412643
 R^2 (Validation): 0.23411765508154092
+------- 100 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 3.3546950610961286e-05
+R^2 (Validation): 0.9642330805045726
+------- 150 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.0001846635244426331
+R^2 (Validation): 0.8714652342164341

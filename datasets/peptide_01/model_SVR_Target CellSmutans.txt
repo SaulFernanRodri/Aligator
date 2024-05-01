@@ -8,3 +8,13 @@ R^2 (Validation): 0.9669299972929946
 Target: Target CellSmutans
 MSE (Validation): 9.999985814798234e-05
 R^2 (Validation): 0.998981928888812
+------- 100 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target CellSmutans
+MSE (Validation): 9.999985814795815e-05
+R^2 (Validation): 0.9990835190454113
+------- 150 -------
+--- Model Summary: Support Vector Regressor ---
+Target: Target CellSmutans
+MSE (Validation): 9.999985814798785e-05
+R^2 (Validation): 0.9990902863655527
