@@ -1,10 +1,26 @@
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
 from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.svm import SVR
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectFromModel
-import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error, r2_score
+
+
+def _create_pipeline(model, feature_selector=None):
+    """Create a machine learning pipeline with optional feature selection."""
+    steps = []
+    if feature_selector:
+        steps.append(('feature_selection', feature_selector))
+    steps.append(('model', model))
+    return Pipeline(steps)
+
+
+def _perform_grid_search(pipeline, param_grid, x_train, y_train):
+    """Perform grid search with cross-validation."""
+    grid_search = GridSearchCV(pipeline, param_grid, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
+    grid_search.fit(x_train, y_train)
+    return grid_search
 
 
 def _visualize_performance(y_true, y_pred, model_name):
@@ -39,6 +55,7 @@ def _print_best_params(search_cv, model_name):
 
 def trainrandomforest(x_train, y_train, x_val, y_val, target, filename, timestep_interval):
     rf = RandomForestRegressor(random_state=42)
+    pipeline = _create_pipeline(rf)
     param_dist_rf = {
         'n_estimators': [200, 300, 500, 1000],
         'max_depth': [20, 30, None],
@@ -46,8 +63,9 @@ def trainrandomforest(x_train, y_train, x_val, y_val, target, filename, timestep
         'min_samples_leaf': [1, 2, 4, 8],
         'max_features': ['sqrt']
     }
-    grid_search_rf = GridSearchCV(rf, param_dist_rf, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
-    grid_search_rf.fit(x_train, y_train)
+
+    grid_search_rf = _perform_grid_search(pipeline, param_dist_rf, x_train, y_train)
+
     best_rf = grid_search_rf.best_estimator_
 
     _print_best_params(grid_search_rf, "Random Forest")
@@ -65,14 +83,15 @@ def trainrandomforest(x_train, y_train, x_val, y_val, target, filename, timestep
 
 def traingbr(x_train, y_train, x_val, y_val, target, filename, timestep_interval):
     gbr = GradientBoostingRegressor(random_state=42)
+    pipeline = _create_pipeline(gbr)
     param_dist_gbr = {
         'n_estimators': [100, 200, 500],
         'max_depth': [3, 5, 7, 10],
         'min_samples_split': [2, 5, 10],
         'min_samples_leaf': [1, 2, 4, 8]
     }
-    grid_search_gbr = GridSearchCV(gbr, param_dist_gbr, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
-    grid_search_gbr.fit(x_train, y_train)
+
+    grid_search_gbr = _perform_grid_search(pipeline, param_dist_gbr, x_train, y_train)
     best_gbr = grid_search_gbr.best_estimator_
 
     _print_best_params(grid_search_gbr, "Gradient Boosting Regressor")
@@ -89,10 +108,9 @@ def traingbr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
 
 
 def trainsvr(x_train, y_train, x_val, y_val, target, filename, timestep_interval):
-    pipeline = Pipeline([
-        ('feature_selection', SelectFromModel(GradientBoostingRegressor(random_state=42))),
-        ('svr', SVR())
-    ])
+    svr = SVR()
+    feature_selector = SelectFromModel(GradientBoostingRegressor(random_state=42))
+    pipeline = _create_pipeline(svr, feature_selector)
 
     param_grid_svr = {
         'svr__C': [0.1, 1, 10, 100],
@@ -101,8 +119,7 @@ def trainsvr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
         'svr__epsilon': [0.01, 0.1, 1]
     }
 
-    grid_search_svr = GridSearchCV(pipeline, param_grid_svr, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
-    grid_search_svr.fit(x_train, y_train)
+    grid_search_svr = _perform_grid_search(pipeline, param_grid_svr, x_train, y_train)
     best_svr_model = grid_search_svr.best_estimator_
 
     _print_best_params(grid_search_svr, "Support Vector Regressor")
@@ -114,5 +131,4 @@ def trainsvr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
     _print_model_summary("Support Vector Regressor", mse_val, r2_val, target,
                          f"{filename}/model_SVR_{target}.txt", timestep_interval)
     # _visualize_performance(y_val, y_pred_val, "Support Vector Regressor")
-
     return best_svr_model

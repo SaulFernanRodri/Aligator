@@ -3,7 +3,7 @@ import os
 import pickle
 from processing import normalize_dataframe
 from preprocessing import load_data, load_data_json, preprocessing_data, date_diff_in_seconds
-from models import traingbr, trainsvr, trainrandomforest, test, modeling
+from models import traingbr, trainsvr, trainrandomforest, test, modeling, select_model, predict, save_predictions
 from union import union
 
 
@@ -18,6 +18,7 @@ def main():
                         help="Number of divisions, Example 2 divisions = 8 small cubes")
     parser.add_argument("-n", "--name", type=str, help="Name")
     parser.add_argument("-ts", "--timesteps", type=int, help="Timesteps interval")
+    parser.add_argument("-tg", "--target", type=str, help="Target")
     args = parser.parse_args()
 
     # Model Parameters
@@ -28,6 +29,7 @@ def main():
     option = args.option
     name = args.name
     timesteps = args.timesteps
+    target = args.target
 
     # Global variables
     output_folder = f"C:/Users/Saul/Desktop/TFG/BioSpective/preprocesing/{name}/{timesteps}/"
@@ -64,7 +66,7 @@ def main():
             pickle.dump((data['x_val'], data['y_val']), open(f"data/val_{target}.pkl", "wb"))
             pickle.dump((data['x_test'], data['y_test']), open(f"data/test_{target}.pkl", "wb"))
 
-            pickle.dump(targets,  open('data/targets.pkl', 'wb'))
+            pickle.dump(targets, open('data/targets.pkl', 'wb'))
 
             rf = trainrandomforest(data['x_train'], data['y_train'], data['x_val'], data['y_val'], target,
                                    results_folder, timesteps)
@@ -92,6 +94,20 @@ def main():
 
                 print(f"Testing {model_name} model for {target}")
                 test(model, x_test, y_test)
+
+    if option == "predict":
+        
+        model = select_model(f"data/{name}_{target}.pkl")
+
+        df = load_data(folder_path, 0)
+        config = load_data_json(route_json)
+
+        simulation_df = preprocessing_data(df, config, n_division, timesteps, output_folder)
+        simulation_df = normalize_dataframe(simulation_df)
+
+        predictions = predict(model, simulation_df)
+
+        save_predictions(predictions, f"predictions/{name}_{target}.csv")
 
 
 if __name__ == '__main__':
