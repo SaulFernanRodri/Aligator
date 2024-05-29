@@ -1,16 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
-
-
-def date_diff_in_seconds(name, df, output_folder, date_column='Date', output_filename='time.txt'):
-
-    df[date_column] = pd.to_datetime(df[date_column])
-    timedelta = df[date_column].iloc[-1] - df[date_column].iloc[0]
-    diff_seconds = timedelta.total_seconds()
-
-    with open(os.path.join(output_folder, output_filename), 'a') as file:
-        file.write(f'{name} : {diff_seconds}\n')
+from load import load_data
 
 
 def _calculate_volume(environment):
@@ -85,20 +76,14 @@ def preprocessing_data(df, config, n_divisions, future_step, output_folder):
 
     results = []
 
-    # adjustment = 0.0001
-    # limits = {
-    #    'X': np.linspace(df['X'].min(), df['X'].max() + adjustment, n_divisions + 1),
-    #   'Y': np.linspace(df['Y'].min(), df['Y'].max() + adjustment, n_divisions + 1),
-    #  'Z': np.linspace(df['Z'].min(), df['Z'].max() + adjustment, n_divisions + 1),
-    # }
-    # nos aseguramos que si cambiamos el numero de ts no cambien de tamaño los sectores
     limits = {
         'X': np.linspace(0, width*1000, n_divisions + 1),
         'Y': np.linspace(0, height*1000, n_divisions + 1),
         'Z': np.linspace(0, length*1000, n_divisions + 1),
     }
 
-    write_limits_to_file(limits, output_folder)
+    if output_folder != "":
+        write_limits_to_file(limits, output_folder)
 
     # Por ejemplo, si df['X'].min() es 0, df['X'].max() es 10, y n_divisions es 2, entonces np.linspace(0, 10, 3)
     # generará [0, 5, 10].
@@ -149,3 +134,20 @@ def preprocessing_data(df, config, n_divisions, future_step, output_folder):
                     sector = sector + 1
 
     return pd.DataFrame(results)
+
+
+def date_diff_in_seconds(name, df, output_folder, date_column='Date', output_filename='time.txt'):
+
+    df[date_column] = pd.to_datetime(df[date_column])
+    timedelta = df[date_column].iloc[-1] - df[date_column].iloc[0]
+    diff_seconds = timedelta.total_seconds()
+
+    with open(os.path.join(output_folder, output_filename), 'a') as file:
+        file.write(f'{name} : {diff_seconds}\n')
+
+
+def load_and_preprocess(filename, config, timesteps, output_folder, n_division):
+    df = load_data(filename, timesteps)
+    simulation_df = preprocessing_data(df, config, n_division, timesteps, output_folder)
+    date_diff_in_seconds(filename, df, output_folder)
+    return simulation_df

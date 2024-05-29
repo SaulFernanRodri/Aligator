@@ -5,6 +5,7 @@ from sklearn.svm import SVR
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import mean_squared_error, r2_score
+import pickle
 
 
 def _create_pipeline(model, feature_selector=None):
@@ -57,11 +58,11 @@ def trainrandomforest(x_train, y_train, x_val, y_val, target, filename, timestep
     rf = RandomForestRegressor(random_state=42)
     pipeline = _create_pipeline(rf)
     param_dist_rf = {
-        'n_estimators': [200, 300, 500, 1000],
-        'max_depth': [20, 30, None],
-        'min_samples_split': [2, 5, 10, 20],
-        'min_samples_leaf': [1, 2, 4, 8],
-        'max_features': ['sqrt']
+        'model__n_estimators': [200, 300, 500, 1000],
+        'model__max_depth': [20, 30, None],
+        'model__min_samples_split': [2, 5, 10, 20],
+        'model__min_samples_leaf': [1, 2, 4, 8],
+        'model__max_features': ['sqrt']
     }
 
     grid_search_rf = _perform_grid_search(pipeline, param_dist_rf, x_train, y_train)
@@ -75,7 +76,7 @@ def trainrandomforest(x_train, y_train, x_val, y_val, target, filename, timestep
     r2 = r2_score(y_val, y_pred_val)
 
     _print_model_summary("Random Forest", mse, r2, target,
-                         f"{filename}/model_RF_{target}.txt", timestep_interval)
+                         f"files/{filename}/model_RF_{target}.txt", timestep_interval)
     # _visualize_performance(y_val, y_pred_val, "Random Forest")
 
     return best_rf
@@ -101,7 +102,7 @@ def traingbr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
     r2_val = r2_score(y_val, y_pred_val)
 
     _print_model_summary("Gradient Boosting Regressor", mse_val, r2_val, target,
-                         f"{filename}/model_GBR_{target}.txt", timestep_interval)
+                         f"files/{filename}/model_GBR_{target}.txt", timestep_interval)
     # _visualize_performance(y_val, y_pred_val, "Gradient Boosting Regressor")
 
     return best_gbr
@@ -129,6 +130,17 @@ def trainsvr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
     r2_val = r2_score(y_val, y_pred_val)
 
     _print_model_summary("Support Vector Regressor", mse_val, r2_val, target,
-                         f"{filename}/model_SVR_{target}.txt", timestep_interval)
+                         f"files/{filename}/model_SVR_{target}.txt", timestep_interval)
     # _visualize_performance(y_val, y_pred_val, "Support Vector Regressor")
     return best_svr_model
+
+
+def execute_model(x_train, y_train, x_val, y_val, target, results_folder, timesteps):
+    rf = trainrandomforest(x_train, y_train, x_val, y_val, target, results_folder, timesteps)
+    pickle.dump(rf, open(f"files/model/rf_{target}.pkl", 'wb'))
+
+    gbr = traingbr(x_train, y_train, x_val, y_val, target, results_folder, timesteps)
+    pickle.dump(gbr, open(f"files/model/gbr_{target}.pkl", 'wb'))
+
+    svr = trainsvr(x_train, y_train, x_val, y_val, target, results_folder, timesteps)
+    pickle.dump(svr, open(f"files/model/svr_{target}.pkl", 'wb'))

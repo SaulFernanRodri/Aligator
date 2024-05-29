@@ -1,10 +1,13 @@
 import argparse
+import glob
 import os
 import pickle
+import pandas as pd
+from joblib import Parallel, delayed
+
 from processing import normalize_dataframe
-from preprocessing import load_data, load_data_json, preprocessing_data, date_diff_in_seconds
-from models import traingbr, trainsvr, trainrandomforest, test, modeling, select_model, predict, save_predictions
-from union import union
+from preprocessing import load_and_preprocess, load_data_json
+from models import execute_model, test, modeling
 
 
 def main():
@@ -29,30 +32,25 @@ def main():
     option = args.option
     name = args.name
     timesteps = args.timesteps
-    target = args.target
 
     # Global variables
-    output_folder = f"C:/Users/Saul/Desktop/TFG/BioSpective/preprocesing/{name}/{timesteps}/"
-    csv_simulation = f"datasets/{name}/{route_csv}"
-    csv_simulation_normalize = f"datasets/{name}/normalize_{route_csv}"
-    results_folder = f"datasets/{name}"
+    output_folder = f"C:/Users/Saul/Desktop/TFG/BioSpective/files/data_processed/{name}/{timesteps}/"
+    csv_simulation = f"files/data_train/{name}/{route_csv}"
+    csv_simulation_normalize = f"files/data_train/{name}/normalize_{route_csv}"
+    results_folder = f"files/data_train/{name}"
 
     if option == "preprocessing":
-        # python app\main.py -o preprocessing -r "C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10" -j "C:\Users\Saul\Desktop\TFG\pathogenic interactions\inputs\Singulator - PCQuorum_1Sm1SmX10_peptide.json" -c 2 -n peptide_10 -ts 50 -csv "dataset_peptide_10_50.csv"
-        for filename in os.listdir(folder_path):
-            if filename.endswith(".txt"):
-                route_df = os.path.join(folder_path, filename)
+        if option == "preprocessing":
+            # Use glob to get all txt files
+            txt_files = glob.glob(os.path.join(folder_path, "*.txt"))
 
-                df = load_data(route_df, timesteps)
-                config = load_data_json(route_json)
+            config = load_data_json(route_json)
+            # Use joblib to parallelize the loading and preprocessing
+            dataframes = Parallel(n_jobs=-1)(
+                delayed(load_and_preprocess)(filename, config, timesteps, output_folder, n_division) for filename in txt_files)
 
-                simulation_df = preprocessing_data(df, config, n_division, timesteps, output_folder)
-
-                output_filename = filename.replace(".txt", "_processed.csv")
-                simulation_df.to_csv(os.path.join(output_folder, output_filename), index=False)
-                date_diff_in_seconds(route_df, df, output_folder)
-
-    union(output_folder, csv_simulation)
+            full_df = pd.concat(dataframes, ignore_index=True)
+            full_df.to_csv(csv_simulation, index=False)
 
     if option == "train":
         # python app\main.py -o train -csv "dataset_peptide_10_500.csv" -n peptide_10 -ts 500
@@ -62,52 +60,25 @@ def main():
         targets, results = modeling(simulation_df)
 
         for target, data in results.items():
-            pickle.dump((data['x_train'], data['y_train']), open(f"data/train_{target}.pkl", "wb"))
-            pickle.dump((data['x_val'], data['y_val']), open(f"data/val_{target}.pkl", "wb"))
-            pickle.dump((data['x_test'], data['y_test']), open(f"data/test_{target}.pkl", "wb"))
+            pickle.dump((data['x_train'], data['y_train']), open(f"files/data/train_{target}.pkl", "wb"))
+            pickle.dump((data['x_val'], data['y_val']), open(f"files/data/val_{target}.pkl", "wb"))
 
-            pickle.dump(targets, open('data/targets.pkl', 'wb'))
-
-            rf = trainrandomforest(data['x_train'], data['y_train'], data['x_val'], data['y_val'], target,
-                                   results_folder, timesteps)
-            pickle.dump(rf, open(f"model/rf_{target}.pkl", 'wb'))
-
-            gbr = traingbr(data['x_train'], data['y_train'], data['x_val'], data['y_val'], target, results_folder,
-                           timesteps)
-            pickle.dump(gbr, open(f"model/gbr_{target}.pkl", 'wb'))
-
-            svr = trainsvr(data['x_train'], data['y_train'], data['x_val'], data['y_val'], target, results_folder,
-                           timesteps)
-            pickle.dump(svr, open(f"model/svr_{target}.pkl", 'wb'))
+            execute_model(data['x_train'], data['y_train'], data['x_val'], data['y_val'],
+                          target, results_folder, timesteps)
 
     if option == "test":
-
-        targets = pickle.load(open('data/targets.pkl', 'rb'))
+        targets = pickle.load(open('files/data/targets.pkl', 'rb'))
 
         models = ['rf', 'gbr', 'svr']
 
         for target in targets:
             for model_name in models:
-                model = pickle.load(open(f"data/{model_name}_{target}.pkl", 'rb'))
+                model = pickle.load(open(f"files/data/{model_name}_{target}.pkl", 'rb'))
 
-                x_test, y_test = pickle.load(open(f"data/test_{target}.pkl", "rb"))
+                x_test, y_test = pickle.load(open(f"files/data/test_{target}.pkl", "rb"))
 
                 print(f"Testing {model_name} model for {target}")
                 test(model, x_test, y_test)
-
-    if option == "predict":
-        
-        model = select_model(f"data/{name}_{target}.pkl")
-
-        df = load_data(folder_path, 0)
-        config = load_data_json(route_json)
-
-        simulation_df = preprocessing_data(df, config, n_division, timesteps, output_folder)
-        simulation_df = normalize_dataframe(simulation_df)
-
-        predictions = predict(model, simulation_df)
-
-        save_predictions(predictions, f"predictions/{name}_{target}.csv")
 
 
 if __name__ == '__main__':

@@ -17,4 +17,4 @@ def predict(model, data):
 def save_predictions(predictions, output_path):
     predictions_df = pd.DataFrame(predictions, columns=['predicted_values'])
     predictions_df.to_csv(output_path, index=False)
-    predictions_df.to_json(output_path, orient='records', lines=True)
+
