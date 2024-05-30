@@ -1,0 +1,20 @@
+------- 500 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.0006634437557364472
+R^2 (Validation): 0.9097713096683094
+------- 100 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 6.43987876492735e-05
+R^2 (Validation): 0.9795202598287704
+------- 150 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.00041532484156388727
+R^2 (Validation): 0.9393742843492806
+------- 750 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target Macromoleculeahl
+MSE (Validation): 0.0046582932036902695
+R^2 (Validation): 0.6395156851744308
