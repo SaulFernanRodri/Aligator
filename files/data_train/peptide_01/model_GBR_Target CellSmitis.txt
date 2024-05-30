@@ -1,0 +1,20 @@
+------- 500 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmitis
+MSE (Validation): 0.0013716121896675702
+R^2 (Validation): 0.9871040664705598
+------- 750 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmitis
+MSE (Validation): 0.00018052770728200894
+R^2 (Validation): 0.9985507462105305
+------- 100 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmitis
+MSE (Validation): 0.00027855077486423085
+R^2 (Validation): 0.9973968908819859
+------- 150 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmitis
+MSE (Validation): 1.926514153264691e-06
+R^2 (Validation): 0.9999823734903049

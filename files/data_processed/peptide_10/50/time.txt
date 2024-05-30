@@ -1,0 +1,25 @@
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713984963036_.txt : 51.630646
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985015707_.txt : 62.500583
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985079287_.txt : 38.150241
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985118556_.txt : 68.796223
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985188417_.txt : 48.539019
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713984963036_.txt : 51.630646
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985015707_.txt : 62.500583
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985079287_.txt : 38.150241
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985118556_.txt : 68.796223
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985188417_.txt : 48.539019
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713984963036_.txt : 51.630646
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985015707_.txt : 62.500583
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985079287_.txt : 38.150241
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985118556_.txt : 68.796223
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide10\PCQuorum-SmSmX10_data_1713985188417_.txt : 48.539019
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065109003_.txt : 49.078638
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065159310_.txt : 45.984509
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065206412_.txt : 113.522359
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065320960_.txt : 38.121175
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065360185_.txt : 96.957238
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065109003_.txt : 49.078638
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065159310_.txt : 45.984509
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065206412_.txt : 113.522359
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065320960_.txt : 38.121175
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide01\PCQuorum-SmSmX01_data_1714065360185_.txt : 96.957238

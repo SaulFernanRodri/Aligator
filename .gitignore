@@ -117,4 +117,4 @@ dmypy.json
 .idea/
 
 #datos
-files/preprocesing/
+files/data_simulation/
