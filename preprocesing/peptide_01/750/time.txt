@@ -1,0 +1,5 @@
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide01\PCQuorum-SmSmX01_data_1714065109003_.txt : 48.699643
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide01\PCQuorum-SmSmX01_data_1714065159310_.txt : 45.671504
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide01\PCQuorum-SmSmX01_data_1714065206412_.txt : 113.444235
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide01\PCQuorum-SmSmX01_data_1714065320960_.txt : 37.665868
+C:\Users\Saul\Desktop\TFG\pathogenic interactions\data\data_peptide01\PCQuorum-SmSmX01_data_1714065360185_.txt : 96.875925
