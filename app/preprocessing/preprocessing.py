@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
-from load import load_data
+from .load_pre import load_data
 
 
 def _calculate_volume(environment):
