@@ -16,7 +16,7 @@ def _calculate_volumes(entities):
     for entity in entities:
         entity_name = entity.get('cellName', entity.get('name'))
         entity_radius = entity['radius']
-        if 'height' in entity:
+        if 'height' in entity and entity['height'] != 0:
             entity_height = entity['height']
             volumes[entity_name] = np.pi * (entity_radius ** 2) * entity_height
         else:
@@ -51,18 +51,21 @@ def _select_sector(df, limits, i, j, k):
     return df_sector
 
 
-def write_limits_to_file(limits, output_folder, output_filename='limits.txt'):
+def write_limits_to_file(limits, output_folder, output_filename='limits.csv'):
     n_divisions = len(limits['X']) - 1
     with open(os.path.join(output_folder, output_filename), 'w') as file:
         sector_count = 0
         for i in range(n_divisions):
             for j in range(n_divisions):
                 for k in range(n_divisions):
-                    file.write(f'Sector {sector_count}:\n')
-                    file.write(f'X: {limits["X"][i]}, {limits["X"][i + 1]}\n')
-                    file.write(f'Y: {limits["Y"][j]}, {limits["Y"][j + 1]}\n')
-                    file.write(f'Z: {limits["Z"][k]}, {limits["Z"][k + 1]}\n')
-                    file.write('\n')
+                    iniX = limits["X"][i]
+                    endX = limits["X"][i + 1]
+                    iniY = limits["Y"][j]
+                    endY = limits["Y"][j + 1]
+                    iniZ = limits["Z"][k]
+                    endZ = limits["Z"][k + 1]
+                    # Escribir en el formato solicitado: primero sector, luego los límites en orden X, Y, Z
+                    file.write(f'{sector_count}, {iniX}, {endX}, {iniY}, {endY}, {iniZ}, {endZ}\n')
                     sector_count += 1
 
 
@@ -90,16 +93,17 @@ def preprocessing_data(df, config, n_divisions, future_step, output_folder):
     # Esto significa que el espacio en el eje X se dividirá en 2 sectores, con límites en 0, 5, y 10.
 
     targets = {}
-    for timestep in sorted(df['Timestep'].unique()):
-        future_timestep = timestep + future_step
-        df_future = df[df['Timestep'] == future_timestep]
-        for i in range(n_divisions):
-            for j in range(n_divisions):
-                for k in range(n_divisions):
-                    df_future_sector = _select_sector(df_future, limits, i, j, k)
-                    for name in {**cell_volumes, **molecule_volumes}.keys():
-                        num_entities = len(df_future_sector[df_future_sector['Name'] == name])
-                        targets[(timestep, i, j, k, name)] = num_entities
+    if(future_step != 0 ):
+        for timestep in sorted(df['Timestep'].unique()):
+            future_timestep = timestep + future_step
+            df_future = df[df['Timestep'] == future_timestep]
+            for i in range(n_divisions):
+                for j in range(n_divisions):
+                    for k in range(n_divisions):
+                        df_future_sector = _select_sector(df_future, limits, i, j, k)
+                        for name in {**cell_volumes, **molecule_volumes}.keys():
+                            num_entities = len(df_future_sector[df_future_sector['Name'] == name])
+                            targets[(timestep, i, j, k, name)] = num_entities
 
     for timestep in df['Timestep'].unique():
         df_timestep = df[df['Timestep'] == timestep]

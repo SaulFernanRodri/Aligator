@@ -1,43 +1,48 @@
 import argparse
-from processing import normalize_dataframe
+import glob
+import os
+from processing import normalize_dataframe, denormalize_predictions
 from preprocessing import load_data, load_data_json, preprocessing_data
 from models import select_model, predict, save_predictions
 
 
 def run():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--route_df", type=str, help="Route of the dataset")
-    parser.add_argument("-j", "--route_json", type=str, help="Route of the json")
-    parser.add_argument("-csv", "--route_csv", type=str, help="Route of the csv")
-    parser.add_argument("-c", "--number_division", type=int, default=2,
-                        help="Number of divisions, Example 2 divisions = 8 small cubes")
-    parser.add_argument("-ts", "--timesteps", type=int, help="Timesteps interval")
-    parser.add_argument("-tg", "--target", type=str, help="Target")
-    parser.add_argument("-m", "--model", type=str, help="Model")
-    parser.add_argument("-r", "--results", type=str, help="Results")
+    parser.add_argument("-j", "--route_json", type=str, help="Route of the json", required=True)
     args = parser.parse_args()
 
-    # Model Parameters
-    folder_path = args.route_df
     route_json = args.route_json
-    n_division = args.number_division
-    timesteps = args.timesteps
-    model_path = args.model
-    result_path = args.results
+
+    config=load_data_json(route_json)
+
+    # Model Parameters desde el JSON
+    folder_path = config["ml"]["mlOutput"]
+    n_division = config["ml"]["parameter"]["division"]
+    timesteps = config["ml"]["parameter"]["ts"]
+    model_path = config["ml"]["parameter"]["model"]
+    result_path = config["ml"]["parameter"]["results"]
+    target = config["ml"]["parameter"]["tg"]
 
     model = select_model(model_path)
 
-    df = load_data(folder_path, 0)
+    filename = glob.glob(os.path.join(folder_path, "*.txt"))
 
-    config = load_data_json(route_json)
+    df = load_data(filename[0], 1)
+    df.to_csv(folder_path+"df1.csv", index=False)
 
-    simulation_df = preprocessing_data(df, config, n_division, timesteps, "")
-    simulation_df = normalize_dataframe(simulation_df)
+    simulation_df = preprocessing_data(df, config, n_division, 0, folder_path)
+    simulation_df.to_csv(folder_path+"df.csv", index=False)
+    simulation_df_normalize = normalize_dataframe("",simulation_df)
 
-    predictions = predict(model, simulation_df)
+    model_features = model.feature_names_in_
+    simulation_df_normalize = simulation_df_normalize[model_features]
+
+    predictions = predict(model, simulation_df_normalize)
+
+    predictions = denormalize_predictions(predictions)
 
     save_predictions(predictions, result_path)
 
 
-if __name__ == '__run__':
+if __name__ == '__main__':
     run()
