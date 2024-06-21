@@ -32,7 +32,7 @@ def run():
 
     simulation_df = preprocessing_data(df, config, n_division, 0, folder_path)
     simulation_df.to_csv(folder_path+"df.csv", index=False)
-    simulation_df_normalize = normalize_dataframe("",simulation_df)
+    simulation_df_normalize = normalize_dataframe(simulation_df)
 
     model_features = model.feature_names_in_
     simulation_df_normalize = simulation_df_normalize[model_features]
@@ -41,8 +41,11 @@ def run():
 
     predictions = denormalize_predictions(predictions)
 
+
     save_predictions(predictions, result_path)
 
 
 if __name__ == '__main__':
     run()
+
+

@@ -14,7 +14,6 @@ def predict(model, data):
     return model.predict(data)
 
 
-def save_predictions(predictions, output_path):
-    predictions_df = pd.DataFrame(predictions, columns=['predicted_values'])
-    predictions_df.to_csv(output_path, index=False)
+def save_predictions(predictions, result_path):
+    predictions.to_csv(result_path, index=False)
 

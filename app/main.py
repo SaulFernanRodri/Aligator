@@ -34,7 +34,7 @@ def main():
     timesteps = args.timesteps
 
     # Global variables
-    output_folder = f"C:/Users/Saul/Desktop/TFG/BioSpective/files/data_processed/{name}/{timesteps}/"
+    output_folder = f"files/data_processed/{name}/{timesteps}/"
     csv_simulation = f"files/data_train/{name}/{route_csv}"
     csv_simulation_normalize = f"files/data_train/{name}/normalize_{route_csv}"
     results_folder = f"files/data_train/{name}"
