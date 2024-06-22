@@ -55,6 +55,7 @@ def write_limits_to_file(limits, output_folder, output_filename='limits.csv'):
     n_divisions = len(limits['X']) - 1
     with open(os.path.join(output_folder, output_filename), 'w') as file:
         sector_count = 0
+        file.write(f'Sector,iniX,endX,iniY,endY,iniZ,endZ\n')
         for i in range(n_divisions):
             for j in range(n_divisions):
                 for k in range(n_divisions):
@@ -65,7 +66,7 @@ def write_limits_to_file(limits, output_folder, output_filename='limits.csv'):
                     iniZ = limits["Z"][k]
                     endZ = limits["Z"][k + 1]
                     # Escribir en el formato solicitado: primero sector, luego los límites en orden X, Y, Z
-                    file.write(f'{sector_count}, {iniX}, {endX}, {iniY}, {endY}, {iniZ}, {endZ}\n')
+                    file.write(f'{sector_count},{iniX},{endX},{iniY},{endY},{iniZ},{endZ}\n')
                     sector_count += 1
 
 

@@ -1,0 +1,4 @@
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\prueba\PCQuorum-SmSmX01_data_1714065109003_.txt : 49.052636
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\prueba\PCQuorum-SmSmX10_data_1719149243942_.txt : 0.414113
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\prueba\PCQuorum-SmSmX10_data_1719150142737_.txt : 0.406991
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\prueba\PCQuorum-SmSmX10_data_1719149955356_.txt : 0.490002

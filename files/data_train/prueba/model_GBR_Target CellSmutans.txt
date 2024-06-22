@@ -1,0 +1,15 @@
+------- None -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmutans
+MSE (Validation): 0.002296040439423539
+R^2 (Validation): 0.9793823035337943
+------- None -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmutans
+MSE (Validation): 0.002296040439423539
+R^2 (Validation): 0.9793823035337943
+------- 500 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmutans
+MSE (Validation): 0.0
+R^2 (Validation): 1.0
