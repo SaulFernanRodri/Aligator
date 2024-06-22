@@ -11,7 +11,8 @@ def normalize_dataframe(data):
         train = False
     cols_to_exclude = ['Timestep', 'Sector']
     cols_to_normalize = df.columns.difference(cols_to_exclude)
-    scaler_path = 'files/scaler.pkl'
+    scaler_path = 'files/data/scaler.pkl'
+
     if train:
         scaler = MinMaxScaler()
         df[cols_to_normalize] = scaler.fit_transform(df[cols_to_normalize])
@@ -24,7 +25,7 @@ def normalize_dataframe(data):
 
 
 def denormalize_predictions(predictions):
-    scaler = pickle.load(open('files/scaler.pkl', 'rb'))
+    scaler = pickle.load(open('files/data/scaler.pkl', 'rb'))
     temp_df = pd.DataFrame(predictions, columns=['Prediction'])
     denormalized_values = scaler.inverse_transform(temp_df)
     denormalized_df = pd.DataFrame(denormalized_values, columns=['Prediction'])

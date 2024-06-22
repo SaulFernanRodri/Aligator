@@ -13,15 +13,14 @@ from models import execute_model, test, modeling
 def main():
     # cd desktop\tfg\BioSpective\venv\scripts
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--option", type=str, help="Select a script option")
-    parser.add_argument("-r", "--route_df", type=str, help="Route of the dataset")
-    parser.add_argument("-j", "--route_json", type=str, help="Route of the json")
-    parser.add_argument("-csv", "--route_csv", type=str, help="Route of the csv")
+    parser.add_argument("-o", "--option", type=str, help="Select a script option (preprocessing, train, test)")
+    parser.add_argument("-r", "--route_df", type=str, help="Route of the data (Directory of data simulation)")
+    parser.add_argument("-j", "--route_json", type=str, help="Route of the initialization JSON")
+    parser.add_argument("-csv", "--route_csv", type=str, help="Route of the CSV (data preprocessed)")
     parser.add_argument("-c", "--number_division", type=int, default=2,
-                        help="Number of divisions, Example 2 divisions = 8 small cubes")
+                        help="Number of divisions (2 divisions = 8 small cubes)")
     parser.add_argument("-n", "--name", type=str, help="Name")
-    parser.add_argument("-ts", "--timesteps", type=int, help="Timesteps interval")
-    parser.add_argument("-tg", "--target", type=str, help="Target")
+    parser.add_argument("-ts", "--timesteps", type=int, help="Jump between timesteps")
     args = parser.parse_args()
 
     # Model Parameters
@@ -40,17 +39,16 @@ def main():
     results_folder = f"files/data_train/{name}"
 
     if option == "preprocessing":
-        if option == "preprocessing":
-            # Use glob to get all txt files
-            txt_files = glob.glob(os.path.join(folder_path, "*.txt"))
+        # python app\main.py -o preprocessing -r "D:\workspace\saul\data_y" -j "C:\Users\Curmis4th\Desktop\Saul\pathogenic interactions\inputs\y5 feeding cells.json" -c 2 -n data_y -ts 500 -csv "dataset_data_y_500.csv"
+        txt_files = glob.glob(os.path.join(folder_path, "*.txt"))
+        config = load_data_json(route_json)
 
-            config = load_data_json(route_json)
-            # Use joblib to parallelize the loading and preprocessing
-            dataframes = Parallel(n_jobs=-1)(
-                delayed(load_and_preprocess)(filename, config, timesteps, output_folder, n_division) for filename in txt_files)
+        dataframes = Parallel(n_jobs=-1)(
+            delayed(load_and_preprocess)(filename, config, timesteps, output_folder, n_division)
+            for filename in txt_files)
 
-            full_df = pd.concat(dataframes, ignore_index=True)
-            full_df.to_csv(csv_simulation, index=False)
+        full_df = pd.concat(dataframes, ignore_index=True)
+        full_df.to_csv(csv_simulation, index=False)
 
     if option == "train":
         # python app\main.py -o train -csv "dataset_peptide_10_500.csv" -n peptide_10 -ts 500
@@ -62,22 +60,21 @@ def main():
         for target, data in results.items():
             pickle.dump((data['x_train'], data['y_train']), open(f"files/data/train_{target}.pkl", "wb"))
             pickle.dump((data['x_val'], data['y_val']), open(f"files/data/val_{target}.pkl", "wb"))
+            pickle.dump((data['x_test'], data['y_test']), open(f"files/data/test_{target}.pkl", "wb"))
 
             execute_model(data['x_train'], data['y_train'], data['x_val'], data['y_val'],
                           target, results_folder, timesteps)
 
     if option == "test":
+        # python app\main.py -o test
         targets = pickle.load(open('files/data/targets.pkl', 'rb'))
 
         models = ['rf', 'gbr', 'svr']
 
         for target in targets:
             for model_name in models:
-                model = pickle.load(open(f"files/data/{model_name}_{target}.pkl", 'rb'))
-
+                model = pickle.load(open(f"files/model/{model_name}_{target}.pkl", 'rb'))
                 x_test, y_test = pickle.load(open(f"files/data/test_{target}.pkl", "rb"))
-
-                print(f"Testing {model_name} model for {target}")
                 test(model, x_test, y_test)
 
 

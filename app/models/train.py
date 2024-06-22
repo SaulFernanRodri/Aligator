@@ -76,7 +76,7 @@ def trainrandomforest(x_train, y_train, x_val, y_val, target, filename, timestep
     r2 = r2_score(y_val, y_pred_val)
 
     _print_model_summary("Random Forest", mse, r2, target,
-                         f"files/{filename}/model_RF_{target}.txt", timestep_interval)
+                         f"{filename}/model_RF_{target}.txt", timestep_interval)
     # _visualize_performance(y_val, y_pred_val, "Random Forest")
 
     return best_rf
@@ -86,10 +86,10 @@ def traingbr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
     gbr = GradientBoostingRegressor(random_state=42)
     pipeline = _create_pipeline(gbr)
     param_dist_gbr = {
-        'n_estimators': [100, 200, 500],
-        'max_depth': [3, 5, 7, 10],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4, 8]
+        'model__n_estimators': [100, 200, 500],
+        'model__max_depth': [3, 5, 7, 10],
+        'model__min_samples_split': [2, 5, 10],
+        'model__min_samples_leaf': [1, 2, 4, 8]
     }
 
     grid_search_gbr = _perform_grid_search(pipeline, param_dist_gbr, x_train, y_train)
@@ -102,7 +102,7 @@ def traingbr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
     r2_val = r2_score(y_val, y_pred_val)
 
     _print_model_summary("Gradient Boosting Regressor", mse_val, r2_val, target,
-                         f"files/{filename}/model_GBR_{target}.txt", timestep_interval)
+                         f"{filename}/model_GBR_{target}.txt", timestep_interval)
     # _visualize_performance(y_val, y_pred_val, "Gradient Boosting Regressor")
 
     return best_gbr
@@ -114,10 +114,10 @@ def trainsvr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
     pipeline = _create_pipeline(svr, feature_selector)
 
     param_grid_svr = {
-        'svr__C': [0.1, 1, 10, 100],
-        'svr__gamma': ['scale', 'auto'],
-        'svr__kernel': ['rbf', 'linear'],
-        'svr__epsilon': [0.01, 0.1, 1]
+        'model__C': [0.1, 1, 10, 100],
+        'model__gamma': ['scale', 'auto'],
+        'model__kernel': ['rbf', 'linear'],
+        'model__epsilon': [0.01, 0.1, 1]
     }
 
     grid_search_svr = _perform_grid_search(pipeline, param_grid_svr, x_train, y_train)
@@ -130,7 +130,7 @@ def trainsvr(x_train, y_train, x_val, y_val, target, filename, timestep_interval
     r2_val = r2_score(y_val, y_pred_val)
 
     _print_model_summary("Support Vector Regressor", mse_val, r2_val, target,
-                         f"files/{filename}/model_SVR_{target}.txt", timestep_interval)
+                         f"{filename}/model_SVR_{target}.txt", timestep_interval)
     # _visualize_performance(y_val, y_pred_val, "Support Vector Regressor")
     return best_svr_model
 
