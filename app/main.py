@@ -3,6 +3,7 @@ import glob
 import os
 import pickle
 import pandas as pd
+import numpy as np
 from joblib import Parallel, delayed
 
 from processing import normalize_dataframe
@@ -52,7 +53,7 @@ def main():
 
     if option == "train":
         # python app\main.py -o train -csv "dataset_peptide_10_500.csv" -n peptide_10 -ts 500
-        simulation_df = normalize_dataframe(csv_simulation)
+        simulation_df = normalize_dataframe(csv_simulation,"")
         simulation_df.to_csv(csv_simulation_normalize, index=False)
 
         targets, results = modeling(simulation_df)
@@ -75,6 +76,8 @@ def main():
             for model_name in models:
                 model = pickle.load(open(f"files/model/{model_name}_{target}.pkl", 'rb'))
                 x_test, y_test = pickle.load(open(f"files/data/test_{target}.pkl", "rb"))
+                x_test = np.array(x_test, copy=True)
+                y_test = np.array(y_test, copy=True)
                 test(model, x_test, y_test)
 
 

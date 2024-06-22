@@ -15,5 +15,5 @@ def predict(model, data):
 
 
 def save_predictions(predictions, result_path):
-    predictions.to_csv(result_path, index=False)
+    predictions.to_csv(result_path + "predictions.csv", index=False)
 
