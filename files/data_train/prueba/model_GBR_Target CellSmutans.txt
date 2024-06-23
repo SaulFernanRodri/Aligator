@@ -13,3 +13,8 @@ R^2 (Validation): 0.9793823035337943
 Target: Target CellSmutans
 MSE (Validation): 0.0
 R^2 (Validation): 1.0
+------- 500 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmutans
+MSE (Validation): 0.0
+R^2 (Validation): 1.0
