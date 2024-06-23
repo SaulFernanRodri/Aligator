@@ -18,3 +18,8 @@ R^2 (Validation): 1.0
 Target: Target CellSmitis
 MSE (Validation): 0.0
 R^2 (Validation): 1.0
+------- 500 -------
+--- Model Summary: Random Forest ---
+Target: Target CellSmitis
+MSE (Validation): 0.00011774852860153739
+R^2 (Validation): 0.998717518135738

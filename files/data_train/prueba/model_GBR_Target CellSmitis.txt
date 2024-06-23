@@ -13,3 +13,8 @@ R^2 (Validation): 1.0
 Target: Target CellSmitis
 MSE (Validation): 0.0
 R^2 (Validation): 1.0
+------- 500 -------
+--- Model Summary: Gradient Boosting Regressor ---
+Target: Target CellSmitis
+MSE (Validation): 9.097435624681327e-05
+R^2 (Validation): 0.9990091344377281

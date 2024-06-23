@@ -5,3 +5,8 @@ C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\prueba\PCQuorum-SmSm
 C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\prueba\PCQuorum-SmSmX10_data_1719149243942_.txt : 0.414113
 C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\prueba\PCQuorum-SmSmX10_data_1719150142737_.txt : 0.406991
 C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\prueba\PCQuorum-SmSmX10_data_1719149955356_.txt : 0.490002
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide10\PCQuorum-SmSmX10_data_1713985079287_.txt : 38.150241
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide10\PCQuorum-SmSmX10_data_1713984963036_.txt : 51.499948
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide10\PCQuorum-SmSmX10_data_1713985188417_.txt : 48.409909
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide10\PCQuorum-SmSmX10_data_1713985015707_.txt : 62.399768
+C:\Users\Saul\Desktop\TFG\BioSpective\files\data_simulation\data_peptide10\PCQuorum-SmSmX10_data_1713985118556_.txt : 68.733946
