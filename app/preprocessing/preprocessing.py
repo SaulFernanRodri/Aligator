@@ -65,7 +65,6 @@ def write_limits_to_file(limits, output_folder, output_filename='limits.csv'):
                     endY = limits["Y"][j + 1]
                     iniZ = limits["Z"][k]
                     endZ = limits["Z"][k + 1]
-                    # Escribir en el formato solicitado: primero sector, luego los límites en orden X, Y, Z
                     file.write(f'{sector_count},{iniX},{endX},{iniY},{endY},{iniZ},{endZ}\n')
                     sector_count += 1
 
